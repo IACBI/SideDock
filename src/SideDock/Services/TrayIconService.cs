@@ -26,9 +26,7 @@ public sealed class TrayIconService : IDisposable
 
         _notifyIcon = new NotifyIcon
         {
-            // A built-in system icon as a placeholder; a custom icon comes in
-            // the Phase 5 customization pass.
-            Icon = SystemIcons.Application,
+            Icon = LoadAppIcon(),
             Text = "SideDock",         // tooltip shown on hover
             Visible = true,
             ContextMenuStrip = menu,
@@ -44,5 +42,26 @@ public sealed class TrayIconService : IDisposable
         // lingering until the user hovers over the tray.
         _notifyIcon.Visible = false;
         _notifyIcon.Dispose();
+    }
+
+    // Loads the app's own .ico (bundled as a WPF resource), falling back to a
+    // built-in system icon if it can't be loaded.
+    private static Icon LoadAppIcon()
+    {
+        try
+        {
+            var info = System.Windows.Application.GetResourceStream(
+                new Uri("pack://application:,,,/SideDock.ico"));
+            if (info is not null)
+            {
+                using var stream = info.Stream;
+                return new Icon(stream);
+            }
+        }
+        catch
+        {
+            // Fall back below.
+        }
+        return SystemIcons.Application;
     }
 }

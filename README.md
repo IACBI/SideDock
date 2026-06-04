@@ -31,6 +31,8 @@ system taskbar, it stays out of the way and plays nicely with Windows.
   restart.
 - **Lightweight & well-commented**: timers pause while hidden, icons are fetched
   lazily, brushes are frozen; every Win32 call is documented in the source.
+- **Polished extras**: single-instance lock, optional **start with Windows**,
+  **full-screen auto-hide** (steps aside for games/videos), and a custom icon.
 
 ## Requirements
 - **Windows 11** (expected to work on Windows 10 as well).
@@ -84,6 +86,7 @@ created with defaults on first run and upgraded with any new options on launch.
   "Use24HourClock": true,
   "ShowSeconds": false,
   "ShowOpenWindows": true,
+  "StartWithWindows": false,
   "Theme": {
     "BackgroundTop": "#FF1E1E2E",
     "BackgroundBottom": "#FF11111B",
@@ -116,6 +119,7 @@ created with defaults on first run and upgraded with any new options on launch.
 | `Use24HourClock` | bool | `true` | `true` → `14:05`; `false` → `2:05 PM`. |
 | `ShowSeconds` | bool | `false` | Include seconds in the time. |
 | `ShowOpenWindows` | bool | `true` | Show the open-windows list. |
+| `StartWithWindows` | bool | `false` | Launch SideDock automatically at sign-in (per-user `Run` key). |
 | `Theme.BackgroundTop` / `BackgroundBottom` | ARGB | dark | Background gradient colors. |
 | `Theme.BackgroundOpacity` | number | `0.0` | `0.0` = fully transparent, `1.0` = solid. |
 | `Theme.HoverColor` / `PressedColor` | ARGB | white-ish | Button highlight colors. |

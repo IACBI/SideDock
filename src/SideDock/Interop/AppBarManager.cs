@@ -40,11 +40,13 @@ public sealed class AppBarManager
     private const int SM_CXSCREEN = 0;
     private const int SM_CYSCREEN = 1;
 
-    // A private window-message id the shell uses to notify our window about
-    // appbar events (e.g. a full-screen app appearing). Any value >= WM_USER
-    // is valid for an application-defined message. We register the value now;
-    // handling these notifications is a refinement for a later phase.
-    private const int APPBAR_CALLBACK = 0x0400 + 5; // WM_USER + 5
+    /// <summary>
+    /// The window-message id the shell uses to notify our window about appbar
+    /// events (e.g. a full-screen app appearing — ABN_FULLSCREENAPP). Any value
+    /// >= WM_USER is valid for an application-defined message. MainWindow hooks
+    /// its WndProc to handle these.
+    /// </summary>
+    public const int CallbackMessage = 0x0400 + 5; // WM_USER + 5
 
     // RECT as Win32 defines it: left/top/right/bottom in pixels.
     [StructLayout(LayoutKind.Sequential)]
@@ -113,7 +115,7 @@ public sealed class AppBarManager
         {
             cbSize = Marshal.SizeOf<APPBARDATA>(),
             hWnd = _hwnd,
-            uCallbackMessage = APPBAR_CALLBACK,
+            uCallbackMessage = CallbackMessage,
         };
 
         // Step 1: ABM_NEW — tell the shell "this window is now an appbar".

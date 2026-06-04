@@ -57,7 +57,8 @@ sidetaskbar/
       ├─ Services/
       │  ├─ ConfigService.cs    ← load/save JSON config (%APPDATA%\SideDock)
       │  ├─ AppLauncher.cs      ← Process.Start wrapper
-      │  └─ TrayIconService.cs  ← WinForms NotifyIcon (system tray)
+      │  ├─ TrayIconService.cs  ← WinForms NotifyIcon (system tray)
+      │  └─ StartupService.cs   ← "start with Windows" (HKCU Run key)
       └─ Interop/
          ├─ AppBarManager.cs     ← SHAppBarMessage wrapper (AppBar API)
          ├─ IconExtractor.cs     ← SHGetFileInfo / HICON → WPF ImageSource
@@ -82,7 +83,14 @@ sidetaskbar/
 idempotent AppBar re-registration, lazy window-icon fetch, AppBar freed first
 on shutdown + a global crash handler that releases it, best-effort config
 saves, adaptive clock cadence, and stopping the window poll when disabled.
-Future ideas live in ROADMAP.md ("Beyond v0.1.0").
+
+**Post-v0.1.0 (Unreleased) additions:** single-instance mutex (App.xaml.cs),
+`StartWithWindows` via StartupService (HKCU Run key), full-screen auto-hide
+(MainWindow WndProc handling `ABN_FULLSCREENAPP`; AppBarManager.CallbackMessage),
+a custom `SideDock.ico` (ApplicationIcon + window + tray), and a GitHub Actions
+build workflow. Still deferred (need testing / external steps): Top/Bottom
+docking, multi-monitor + per-monitor DPI, event-driven window updates
+(SetWinEventHook), a settings UI, and winget packaging. See ROADMAP.md.
 
 ## Notes / gotchas
 - `UseWindowsForms` injects `global using System.Drawing;` + `System.Windows.Forms;`

@@ -6,7 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-- _Nothing yet._
+### Added
+- **Single instance:** a second launch exits quietly instead of registering a
+  duplicate AppBar/tray icon.
+- **Start with Windows:** optional `StartWithWindows` config flag that adds/removes
+  a per-user `Run` registry entry.
+- **Full-screen auto-hide:** the dock drops out of "topmost" when a full-screen
+  app (game/video) opens, and returns on top when it closes
+  (handles `ABN_FULLSCREENAPP`).
+- **Custom application icon** for the executable, window, and tray icon (replaces
+  the generic Windows icon).
+- **Continuous integration:** a GitHub Actions workflow builds the solution on
+  Windows for every push and pull request.
 
 ## [0.1.0] - 2026-06-04
 First public version. A standalone vertical dock for Windows 11 that uses only

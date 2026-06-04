@@ -15,7 +15,15 @@
     <Nullable>enable</Nullable>
     <RootNamespace>SideDock</RootNamespace>
     <AssemblyName>SideDock</AssemblyName>
+    <!-- Icon embedded into the .exe (shown in Explorer/Task Manager). -->
+    <ApplicationIcon>SideDock.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Also include the icon as a WPF resource so the window and tray icon
+         can load it at runtime via a pack URI. -->
+    <Resource Include="SideDock.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- Enabling WinForms auto-adds these as global usings, which clash with

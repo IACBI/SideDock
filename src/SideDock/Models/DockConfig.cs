@@ -105,6 +105,9 @@ public sealed class DockConfig
     /// <summary>Show the list of currently open windows.</summary>
     public bool ShowOpenWindows { get; set; } = true;
 
+    /// <summary>Launch SideDock automatically when the user signs in.</summary>
+    public bool StartWithWindows { get; set; } = false;
+
     /// <summary>Colors / theme.</summary>
     public ThemeSettings Theme { get; set; } = new();
 

@@ -55,6 +55,11 @@ public partial class MainWindow : Window
         base.OnSourceInitialized(e);
         _appBar = new AppBarManager(this);
 
+        // Listen for AppBar notifications (e.g. a full-screen app appearing) so
+        // we can drop out of "topmost" and not float over games/videos.
+        if (PresentationSource.FromVisual(this) is HwndSource source)
+            source.AddHook(WndProc);
+
         // Load the config, then immediately write it back so the file always
         // contains the full set of options (older files that only had "Apps"
         // get upgraded with all settings, defaults filled in). This save runs
@@ -86,6 +91,24 @@ public partial class MainWindow : Window
         StartConfigWatcher();
     }
 
+    // ABN_FULLSCREENAPP: the shell tells appbars when a full-screen app opens
+    // (lParam != 0) or closes (lParam == 0).
+    private const int ABN_FULLSCREENAPP = 0x0002;
+
+    /// <summary>
+    /// Handles AppBar shell notifications. When a full-screen app opens we stop
+    /// being topmost so it can cover us; when it closes we go back on top.
+    /// </summary>
+    private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+    {
+        if (msg == AppBarManager.CallbackMessage && wParam.ToInt32() == ABN_FULLSCREENAPP)
+        {
+            bool fullScreenOpening = lParam != IntPtr.Zero;
+            Topmost = !fullScreenOpening;
+        }
+        return IntPtr.Zero;
+    }
+
     // --- Phase 5: apply / reload configuration -------------------------------
 
     /// <summary>
@@ -97,6 +120,9 @@ public partial class MainWindow : Window
         // Icon sizes (content only — these don't change the window geometry).
         _appIconSize = config.IconSize;
         _windowIconSize = config.WindowIconSize;
+
+        // Keep the "start with Windows" registry entry in sync with the config.
+        StartupService.Apply(config.StartWithWindows);
 
         ThemeSettings theme = config.Theme;
 

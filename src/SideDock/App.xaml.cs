@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -9,9 +10,22 @@ namespace SideDock;
 /// </summary>
 public partial class App : Application
 {
+    // Held for the lifetime of the process to enforce a single instance.
+    private Mutex? _singleInstanceMutex;
+
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
+        // Single instance: if another SideDock is already running, exit quietly
+        // so we don't register a second AppBar / tray icon. The name is unique
+        // to the current user session.
+        _singleInstanceMutex = new Mutex(initiallyOwned: true, "SideDock.SingleInstance", out bool isNew);
+        if (!isNew)
+        {
+            Shutdown();
+            return;
+        }
 
         // Safety net: if an unhandled exception bubbles up (e.g. from a timer
         // callback), free the AppBar reservation and tray icon before the app
