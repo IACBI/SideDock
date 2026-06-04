@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- WinExe = a Windows GUI app (no console window pops up). -->
+    <OutputType>WinExe</OutputType>
+    <!-- Target .NET 8 with the Windows desktop features (needed for WPF). -->
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <!-- Turn on WPF support (XAML, Window, etc.). -->
+    <UseWPF>true</UseWPF>
+    <!-- Also reference Windows Forms, purely for its NotifyIcon (system tray).
+         This is part of the Windows Desktop runtime, not an external package. -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- Modern C# conveniences: implicit common 'using's and nullable checks. -->
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>SideDock</RootNamespace>
+    <AssemblyName>SideDock</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Enabling WinForms auto-adds these as global usings, which clash with
+         WPF's System.Windows types (Application, Button, etc.). We only use
+         WinForms inside TrayIconService.cs, where we 'using' them explicitly,
+         so drop the global ones to keep WPF files unambiguous. -->
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
+
+</Project>
