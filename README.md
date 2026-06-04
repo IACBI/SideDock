@@ -10,13 +10,12 @@ documented Windows APIs. It does **not** inject into `explorer.exe`, and it does
 screen it uses the official Windows **AppBar API** (`SHAppBarMessage`), the same
 supported mechanism the system taskbar itself is built on.
 
-## Screenshots
-
-> _Placeholders — replace with real images before release._
-
-| Docked (left) | Transparent over desktop | Right-click menu |
-|---|---|---|
-| `docs/screenshots/dock-left.png` | `docs/screenshots/transparent.png` | `docs/screenshots/menu.png` |
+## About
+SideDock is a small vertical dock that sits along the side of your screen for
+quick access to your favorite apps, a clock, and your open windows. It's built
+as a friendly, well-commented open-source project — easy to read, tweak, and
+learn from. Because it uses only documented Windows APIs and never touches the
+system taskbar, it stays out of the way and plays nicely with Windows.
 
 ## Features
 - **Edge-docked bar** (Left or Right) that **reserves its screen space** via the
