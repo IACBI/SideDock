@@ -73,10 +73,16 @@ sidetaskbar/
 - **Phase 4: DONE & confirmed.** Taskbar-like list of open windows via
   EnumWindows (filtered: visible, titled, not tool window, no owner, not
   DWM-cloaked); click to activate via SetForegroundWindow.
-- **Phase 5: in progress / awaiting user confirmation.** Config-driven theme
-  (colors), size (BarThickness/IconSize), and edge (Left/Right) in
-  `config.json`; live reload via FileSystemWatcher (debounced); perf: timers
-  pause while hidden, brushes frozen, window list rebuilt only on change.
+- **Phase 5: DONE & confirmed.** Config-driven theme (colors/transparency),
+  size, fonts, and edge (Left/Right) in `config.json`; live reload via
+  FileSystemWatcher (debounced); perf: timers pause while hidden, icons fetched
+  lazily, brushes frozen, window list rebuilt only on change.
+
+**All five roadmap phases are complete (v0.1.0).** A code-review pass added:
+idempotent AppBar re-registration, lazy window-icon fetch, AppBar freed first
+on shutdown + a global crash handler that releases it, best-effort config
+saves, adaptive clock cadence, and stopping the window poll when disabled.
+Future ideas live in ROADMAP.md ("Beyond v0.1.0").
 
 ## Notes / gotchas
 - `UseWindowsForms` injects `global using System.Drawing;` + `System.Windows.Forms;`

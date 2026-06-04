@@ -1,7 +1,8 @@
 # SideDock
 
-A lightweight, **open-source, customizable vertical dock / launcher for Windows 11**,
-built with **C# / .NET 8 / WPF**.
+> A lightweight, **open-source, customizable vertical dock / launcher for Windows 11**, built with **C# / .NET 8 / WPF**.
+
+**Version:** 0.1.0 · **License:** MIT
 
 SideDock is a **standalone application** — it is its own window and uses only
 documented Windows APIs. It does **not** inject into `explorer.exe`, and it does
@@ -9,19 +10,34 @@ documented Windows APIs. It does **not** inject into `explorer.exe`, and it does
 screen it uses the official Windows **AppBar API** (`SHAppBarMessage`), the same
 supported mechanism the system taskbar itself is built on.
 
-## Goals
-- A clean vertical bar docked to a screen edge that **reserves its space**, so
-  maximized windows don't overlap it.
-- A fast, low-overhead **app launcher** driven by a simple config file.
-- Optional **clock**, **system tray**, and a **list of open windows**.
-- **Customizable** theme, size, and position.
-- Friendly, well-commented code that's easy to learn from and extend.
+## Screenshots
+
+> _Placeholders — replace with real images before release._
+
+| Docked (left) | Transparent over desktop | Right-click menu |
+|---|---|---|
+| `docs/screenshots/dock-left.png` | `docs/screenshots/transparent.png` | `docs/screenshots/menu.png` |
+
+## Features
+- **Edge-docked bar** (Left or Right) that **reserves its screen space** via the
+  documented AppBar API, so maximized windows don't cover it.
+- **App launcher** — icons read from a JSON config; click to launch.
+- **Clock** (12/24-hour, optional seconds, optional date) at the bottom.
+- **System-tray icon** + a **right-click menu on the bar** to hide, open the
+  config, or exit.
+- **Open-windows list** (taskbar-like) via documented Win32 calls; click to
+  focus/restore a window. Minimized windows are dimmed.
+- **Fully customizable & live-reloaded**: theme colors, transparency, sizes,
+  fonts, docked edge — edit the config file and the dock updates without a
+  restart.
+- **Lightweight & well-commented**: timers pause while hidden, icons are fetched
+  lazily, brushes are frozen; every Win32 call is documented in the source.
 
 ## Requirements
-- Windows 11 (also expected to work on Windows 10).
-- **.NET 8 SDK** *(this machine has the .NET 8 desktop runtime plus a newer SDK
-  that can build `net8.0-windows` targets).*
-- Visual Studio 2022 (Community is fine) **or** the `dotnet` CLI.
+- **Windows 11** (expected to work on Windows 10 as well).
+- **.NET 8 SDK** — or a newer .NET SDK that can build the `net8.0-windows`
+  target. (The .NET 8 **Windows Desktop runtime** is required to run.)
+- **Visual Studio 2022** (Community is fine) **or** the **`dotnet` CLI**.
 
 ## Build & run
 
@@ -32,41 +48,47 @@ supported mechanism the system taskbar itself is built on.
 
 ### Option B — command line
 ```powershell
+# run
 dotnet run --project src/SideDock/SideDock.csproj
-```
 
-To produce a build without running:
-```powershell
+# or build only
 dotnet build SideDock.sln -c Release
 ```
 
-## What you should see
-A slim dark vertical bar pinned to a screen edge (Left by default), always on
-top, reserving its space so maximized windows don't cover it. On the bar:
-**app launcher icons** at the top, a **list of open windows** below a divider,
-and a **clock** at the bottom. Click an app icon to launch it; click a window
-icon to focus that window. **Right-click the bar** (or use the system-tray icon)
-to hide the dock, open the config file, or exit.
+## Usage
+On launch you get a slim vertical bar pinned to the left edge (by default),
+always on top, reserving its space. On the bar, top to bottom:
 
-## Customizing the dock
+1. **App launcher icons** — click to launch.
+2. A **divider**, then the **open-windows list** — click an icon to focus that
+   window (it un-minimizes if needed).
+3. The **clock**.
+
+To **hide**, **open the config**, or **exit**: right-click anywhere on the bar,
+or use the **SideDock system-tray icon** (Windows 11 may tuck it into the `^`
+overflow flyout). When hidden, bring it back from the tray icon.
+
+## Configuration
 SideDock reads `%APPDATA%\SideDock\config.json` and **applies edits live** (no
-restart needed). Open it from the dock's right-click menu → *Open config file*.
+restart). Open it via the right-click menu → *Open config file*. The file is
+created with defaults on first run and upgraded with any new options on launch.
 
+### Example
 ```json
 {
-  "Edge": "Left",            // "Left" or "Right"
-  "BarThickness": 64,        // bar width in pixels
-  "IconSize": 32,            // app icon size in pixels
-  "WindowIconSize": 26,      // open-window icon size in pixels
-  "ShowClock": true,         // show the clock at the bottom
-  "ShowDate": true,          // show the date under the time
-  "Use24HourClock": true,    // true = 14:05, false = 2:05 PM
-  "ShowSeconds": false,      // include seconds (14:05:09)
-  "ShowOpenWindows": true,   // show the list of open windows
+  "Edge": "Left",
+  "BarThickness": 64,
+  "IconSize": 32,
+  "WindowIconSize": 26,
+  "ShowClock": true,
+  "ShowDate": true,
+  "Use24HourClock": true,
+  "ShowSeconds": false,
+  "ShowOpenWindows": true,
   "Theme": {
     "BackgroundTop": "#FF1E1E2E",
     "BackgroundBottom": "#FF11111B",
-    "BackgroundOpacity": 0.0,         // 0.0 = fully transparent, 1.0 = solid
+    "BackgroundOpacity": 0.0,
     "HoverColor": "#33FFFFFF",
     "PressedColor": "#55FFFFFF",
     "TimeColor": "#FFE6E6F0",
@@ -78,23 +100,54 @@ restart needed). Open it from the dock's right-click menu → *Open config file*
     "ButtonCornerRadius": 8
   },
   "Apps": [
-    { "Name": "Notepad", "Path": "C:\\Windows\\System32\\notepad.exe" }
+    { "Name": "Notepad", "Path": "C:\\Windows\\System32\\notepad.exe", "Arguments": null, "IconPath": null }
   ]
 }
 ```
-**Transparency:** the bar is **fully transparent by default**
-(`BackgroundOpacity: 0.0`) — only the icons and clock show, with the desktop
-visible behind. Raise `BackgroundOpacity` toward `1.0` for a solid/tinted bar.
-Colors are hex **ARGB** (`#AARRGGBB`). Per-app optional fields: `Arguments` and
-`IconPath` (a custom `.ico`/`.png`). Save the file and the dock updates live.
+
+### Options reference
+| Key | Type | Default | Description |
+|---|---|---|---|
+| `Edge` | string | `"Left"` | Docked edge: `"Left"` or `"Right"`. |
+| `BarThickness` | number | `64` | Bar width in pixels. |
+| `IconSize` | number | `32` | App icon size in pixels. |
+| `WindowIconSize` | number | `26` | Open-window icon size in pixels. |
+| `ShowClock` | bool | `true` | Show the clock. |
+| `ShowDate` | bool | `true` | Show the date under the time. |
+| `Use24HourClock` | bool | `true` | `true` → `14:05`; `false` → `2:05 PM`. |
+| `ShowSeconds` | bool | `false` | Include seconds in the time. |
+| `ShowOpenWindows` | bool | `true` | Show the open-windows list. |
+| `Theme.BackgroundTop` / `BackgroundBottom` | ARGB | dark | Background gradient colors. |
+| `Theme.BackgroundOpacity` | number | `0.0` | `0.0` = fully transparent, `1.0` = solid. |
+| `Theme.HoverColor` / `PressedColor` | ARGB | white-ish | Button highlight colors. |
+| `Theme.TimeColor` / `DateColor` | ARGB | light | Clock text colors. |
+| `Theme.TimeFontSize` / `DateFontSize` | number | `15` / `10` | Clock font sizes. |
+| `Theme.FontFamily` | string | `"Segoe UI"` | Clock font family. |
+| `Theme.DividerColor` | ARGB | faint | Divider line color. |
+| `Theme.ButtonCornerRadius` | number | `8` | Roundness of the button highlight. |
+| `Apps[]` | array | 3 built-ins | `Name`, `Path`, optional `Arguments`, optional `IconPath`. |
+
+**Colors** are hex **ARGB** (`#AARRGGBB`) — the first two digits are alpha
+(`FF` = opaque, `00` = invisible). **Transparency:** the bar is fully
+transparent by default; raise `Theme.BackgroundOpacity` for a solid/tinted bar.
+If you enter invalid JSON or a bad color, the dock keeps its current look until
+you fix the file.
 
 ## Roadmap
-See [`ROADMAP.md`](ROADMAP.md). Short version:
+See [`ROADMAP.md`](ROADMAP.md). All five planned phases are complete:
 1. Docked vertical bar (AppBar) ✅
 2. App launcher ✅
 3. Clock + system tray ✅
 4. Open-windows list ✅
 5. Customization + performance ✅
 
+## Contributing
+Contributions are welcome — see [`CONTRIBUTING.md`](CONTRIBUTING.md). Core rule:
+SideDock stays a standalone app using only documented APIs (no process
+injection, no modifying the system taskbar or other system components).
+
+## Changelog
+See [`CHANGELOG.md`](CHANGELOG.md).
+
 ## License
-[MIT](LICENSE) — free to use, modify, and distribute. Contributions welcome.
+[MIT](LICENSE) © 2026 A.C.B — free to use, modify, and distribute.
