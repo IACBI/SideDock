@@ -153,4 +153,4 @@ injection, no modifying the system taskbar or other system components).
 See [`CHANGELOG.md`](CHANGELOG.md).
 
 ## License
-[MIT](LICENSE) © 2026 A.C.B — free to use, modify, and distribute.
+[MIT](LICENSE) © 2026 𝓐.𝓒.𝓑 — free to use, modify, and distribute.
